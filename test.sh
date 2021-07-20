@@ -44,4 +44,11 @@ info "Running client"
 podman run -dt --network myCNI --ip 10.88.2.5 --name fido-client quay.io/ayosef/fdo-client-linuxapp /bin/bash
 podman exec -ti -e RUST_LOG=trace fido-client fdo-client-linuxapp
 
+ssh_key=$(podman exec -ti fido-client cat /root/.ssh/authorized_keys | grep testkey)
+if [[ -z ${ssh_key} ]]; then
+    warn "Couldn't find testkey in fido-client"
+else
+    info "testkey found in fido-client"
+fi
+
 make clean
