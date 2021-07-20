@@ -17,3 +17,7 @@ run:
 
 push: build
 	./build-or-push.sh push
+
+poc: all
+	./poc.sh
+	make clean

@@ -20,7 +20,6 @@ function check_registered_devices {
     fi
 }
 
-make
 check_registered_devices
 
 info "Report to rendezvous"
@@ -50,5 +49,3 @@ if [[ -z ${ssh_key} ]]; then
 else
     info "testkey found in fido-client"
 fi
-
-make clean
