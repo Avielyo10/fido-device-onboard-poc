@@ -19,14 +19,10 @@ RUN fdo-owner-tool extend-ownership-voucher testdevice1.ov --current-owner-priva
 
 
 FROM centos AS fdo-client-linuxapp
-RUN useradd -ms /bin/bash fido-user
-WORKDIR /home/fido-user
 COPY --from=fdo-base /fido-device-onboard-rs/target/release/fdo-client-linuxapp /usr/local/bin/
 COPY --from=fdo-base /testdevice1.dc ./
-RUN chown fido-user /home/fido-user/testdevice1.dc
 
-USER fido-user
-ENV DEVICE_CREDENTIAL=/home/fido-user/testdevice1.dc
+ENV DEVICE_CREDENTIAL=/testdevice1.dc
 CMD ["fdo-client-linuxapp"]
 
 
