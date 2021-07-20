@@ -5,7 +5,7 @@ build:
 	./build-or-push.sh build
 
 clean:
-	podman ps -a | awk '{print $$1}' | grep -iv container | xargs podman rm -f || true
+	podman rm -fa
 
 run:
 	podman run -dt -p 8080:8080/tcp --name owner-onboarding-service quay.io/ayosef/fdo-owner-onboarding-service
