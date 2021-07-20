@@ -1,9 +1,11 @@
 FROM centos AS base
 
+# build binaries
 RUN yum update -y && yum install -y cargo git-core openssl-devel
 RUN git clone https://github.com/fedora-iot/fido-device-onboard-rs.git
 RUN cd fido-device-onboard-rs && cargo build --release
 
+# create secrets
 ADD create-secrets.sh ./
 RUN sh create-secrets.sh
 
@@ -18,9 +20,14 @@ RUN fdo-owner-tool extend-ownership-voucher testdevice1.ov --current-owner-priva
 
 FROM centos AS fdo-client-linuxapp
 RUN useradd -ms /bin/bash fido-user
-USER fido-user
 WORKDIR /home/fido-user
 COPY --from=base /fido-device-onboard-rs/target/release/fdo-client-linuxapp /usr/local/bin/
+COPY --from=base /testdevice1.dc ./
+RUN chown fido-user /home/fido-user/testdevice1.dc
+
+USER fido-user
+ENV DEVICE_CREDENTIAL=/home/fido-user/testdevice1.dc
+CMD ["fdo-client-linuxapp"]
 
 
 FROM centos AS fdo-rendezvous-server
@@ -30,6 +37,7 @@ COPY --from=base /fido-device-onboard-rs/target/release/fdo-rendezvous-server /u
 COPY --from=base /keys/device_ca_cert.pem keys/device_ca_cert.pem
 COPY --from=base /keys/manufacturer_cert.pem keys/manufacturer_cert.pem
 RUN chown fido-user keys/*
+
 USER fido-user
 ADD config/rendezvous-service.yml ./
 RUN mkdir -p rendezvous_registered/
@@ -43,6 +51,7 @@ COPY --from=base /fido-device-onboard-rs/target/release/fdo-owner-onboarding-ser
 COPY --from=base /keys/device_ca_cert.pem keys/device_ca_cert.pem
 COPY --from=base /keys/owner_key.der keys/owner_key.der
 RUN chown fido-user keys/*
+
 USER fido-user
 ADD config/owner-onboarding-service.yml ./
 RUN mkdir -p ownership_vouchers/
