@@ -6,6 +6,7 @@ build:
 
 clean:
 	podman rm -fa
+	rm -f testdevice1.ov
 
 run:
 	podman network create myCNI || true
