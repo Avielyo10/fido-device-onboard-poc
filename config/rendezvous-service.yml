@@ -4,4 +4,4 @@ storage_config: /home/fido-user/rendezvous_registered/
 session_store_driver: InMemory
 trusted_manufacturer_keys_path: /home/fido-user/keys/manufacturer_cert.pem
 trusted_device_keys_path: /home/fido-user/keys/device_ca_cert.pem
-bind: 0.0.0.0:8084
+bind: 0.0.0.0:8081
