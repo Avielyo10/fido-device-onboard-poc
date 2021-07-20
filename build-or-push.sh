@@ -1,6 +1,6 @@
 #!/bin/bash
 
-FDOS="fdo-rendezvous-server fdo-owner-onboarding-service fdo-client-linuxapp"
+FDOS="fdo-rendezvous-server fdo-owner-onboarding-service fdo-client-linuxapp fdo-base"
 
 if [[ "$1" == "build" ]]; then
 	for fdo in ${FDOS}; do
