@@ -38,15 +38,15 @@ info "Running client"
 podman run -dt --network myCNI --ip 10.88.2.5 --name fido-client quay.io/ayosef/fdo-client-linuxapp /bin/bash
 podman exec -ti fido-client fdo-client-linuxapp | tee fido-client.log
 
-ssh_key=$(podman exec -ti fido-client cat /root/.ssh/authorized_keys | grep testkey)
+ssh_key=$(podman exec -ti fido-client cat /root/.ssh/authorized_keys | grep ayosef)
 if [[ -z ${ssh_key} ]]; then
     warn "Couldn't find testkey in fido-client"
 else
-    info "testkey found in fido-client"
+    info "ayosef@redhat.com found in fido-client"
 fi
 
 info "Save logs"
 podman logs owner-onboarding-service > owner-onboarding-service.log
 podman logs rendezvous-server > rendezvous-server.log
 
-# make clean
+make clean
