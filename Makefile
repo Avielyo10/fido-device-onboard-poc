@@ -15,8 +15,10 @@ run:
 	podman logs owner-onboarding-service
 	podman logs rendezvous-server
 
-push: build
+push:
 	./build-or-push.sh push
+
+build-n-push: build push
 
 poc: all
 	./poc.sh
