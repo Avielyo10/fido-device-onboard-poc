@@ -23,14 +23,10 @@ function check_registered_devices {
 check_registered_devices
 
 info "Report to rendezvous"
-podman run -dt --network myCNI --ip 10.88.2.4 --name reporter quay.io/ayosef/fdo-base /bin/bash
-podman exec -ti reporter fdo-owner-tool report-to-rendezvous --ownership-voucher testdevice1.ov --owner-private-key keys/owner_key.der --owner-addresses-path owner-addresses.yml  --wait-time 600
+podman exec -ti owner fdo-owner-tool report-to-rendezvous --ownership-voucher testdevice1.ov --owner-private-key keys/owner_key.der --owner-addresses-path owner-addresses.yml  --wait-time 600
 
 info "Copying testdevice1.ov"
-podman cp reporter:/testdevice1.ov .
-
-info "Removing reporter"
-podman rm -f reporter
+podman cp owner:/testdevice1.ov .
 
 check_registered_devices
 
@@ -41,7 +37,7 @@ podman cp testdevice1.ov owner-onboarding-service:/home/fido-user/ownership_vouc
 
 info "Running client"
 podman run -dt --network myCNI --ip 10.88.2.5 --name fido-client quay.io/ayosef/fdo-client-linuxapp /bin/bash
-podman exec -ti -e RUST_LOG=trace fido-client fdo-client-linuxapp
+podman exec -ti fido-client fdo-client-linuxapp | tee fido-client.log
 
 ssh_key=$(podman exec -ti fido-client cat /root/.ssh/authorized_keys | grep testkey)
 if [[ -z ${ssh_key} ]]; then
@@ -49,3 +45,9 @@ if [[ -z ${ssh_key} ]]; then
 else
     info "testkey found in fido-client"
 fi
+
+info "Save logs"
+podman logs owner-onboarding-service > owner-onboarding-service.log
+podman logs rendezvous-server > rendezvous-server.log
+
+make clean

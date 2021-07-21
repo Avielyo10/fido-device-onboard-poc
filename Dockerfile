@@ -23,6 +23,7 @@ COPY --from=fdo-base /fido-device-onboard-rs/target/release/fdo-client-linuxapp 
 COPY --from=fdo-base /testdevice1.dc ./
 
 ENV DEVICE_CREDENTIAL=/testdevice1.dc
+ENV RUST_LOG=trace
 CMD ["fdo-client-linuxapp"]
 
 
@@ -37,6 +38,7 @@ RUN chown fido-user keys/*
 USER fido-user
 ADD config/rendezvous-service.yml ./
 RUN mkdir -p rendezvous_registered/
+ENV RUST_LOG=trace
 CMD ["fdo-rendezvous-server"]
 
 
@@ -51,4 +53,5 @@ RUN chown fido-user keys/*
 USER fido-user
 ADD config/owner-onboarding-service.yml ./
 RUN mkdir -p ownership_vouchers/
+ENV RUST_LOG=trace
 CMD ["fdo-owner-onboarding-service"]
