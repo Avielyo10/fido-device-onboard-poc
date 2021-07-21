@@ -12,7 +12,7 @@ function warn {
 
 function check_registered_devices {
     info "Check if there are registered devices"
-    export GUUID=$(podman exec -ti rendezvous-server ls /home/fido-user/rendezvous_registered/)
+    GUUID=$(podman exec -ti rendezvous-server ls /home/fido-user/rendezvous_registered/)
     if [[ -z ${GUUID} ]]; then
         warn "Nothing has been registered"
     else
@@ -23,7 +23,8 @@ function check_registered_devices {
 check_registered_devices
 
 info "Report to rendezvous"
-podman exec -ti owner fdo-owner-tool report-to-rendezvous --ownership-voucher testdevice1.ov --owner-private-key keys/owner_key.der --owner-addresses-path owner-addresses.yml  --wait-time 600
+podman exec -ti owner fdo-owner-tool report-to-rendezvous --ownership-voucher testdevice1.ov --owner-private-key keys/owner_key.der --owner-addresses-path owner-addresses.yml --wait-time 600
+ov=$(podman exec -ti owner fdo-owner-tool dump-ownership-voucher testdevice1.ov | grep -i guid | awk '{print $NF}' | tr -dc '[:print:]')
 
 info "Copying testdevice1.ov"
 podman cp owner:/testdevice1.ov .
@@ -31,8 +32,6 @@ podman cp owner:/testdevice1.ov .
 check_registered_devices
 
 info "Copy testdevice1.ov to owner-onboarding-service"
-# remove all special characters from ${GUUID}
-ov=$(echo "${GUUID}" | tr -dc '[:print:]')
 podman cp testdevice1.ov owner-onboarding-service:/home/fido-user/ownership_vouchers/${ov}
 
 info "Running client"
@@ -50,4 +49,4 @@ info "Save logs"
 podman logs owner-onboarding-service > owner-onboarding-service.log
 podman logs rendezvous-server > rendezvous-server.log
 
-make clean
+# make clean
