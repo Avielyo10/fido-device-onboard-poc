@@ -18,7 +18,7 @@ RUN fdo-owner-tool extend-ownership-voucher testdevice1.ov --current-owner-priva
 RUN fdo-owner-tool extend-ownership-voucher testdevice1.ov --current-owner-private-key keys/reseller_key.der --new-owner-cert keys/owner_cert.pem
 
 
-FROM centos AS fdo-client-linuxapp
+FROM registry.access.redhat.com/ubi8/ubi-minimal AS fdo-client-linuxapp
 COPY --from=fdo-base /fido-device-onboard-rs/target/release/fdo-client-linuxapp /usr/local/bin/
 COPY --from=fdo-base /testdevice1.dc ./
 
@@ -27,7 +27,7 @@ ENV RUST_LOG=trace
 CMD ["fdo-client-linuxapp"]
 
 
-FROM centos AS fdo-rendezvous-server
+FROM registry.access.redhat.com/ubi8/ubi-minimal AS fdo-rendezvous-server
 RUN useradd -ms /bin/bash fido-user
 WORKDIR /home/fido-user
 COPY --from=fdo-base /fido-device-onboard-rs/target/release/fdo-rendezvous-server /usr/local/bin/
@@ -42,7 +42,7 @@ ENV RUST_LOG=trace
 CMD ["fdo-rendezvous-server"]
 
 
-FROM centos AS fdo-owner-onboarding-service
+FROM registry.access.redhat.com/ubi8/ubi-minimal AS fdo-owner-onboarding-service
 RUN useradd -ms /bin/bash fido-user
 WORKDIR /home/fido-user
 COPY --from=fdo-base /fido-device-onboard-rs/target/release/fdo-owner-onboarding-service /usr/local/bin/
