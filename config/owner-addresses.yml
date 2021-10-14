@@ -2,8 +2,8 @@
 - transport: HTTP
   port: 8079
   addresses:
-    - dns_name: 10.88.2.2
+    - dns_name: 10.89.0.2
 - transport: HTTP
   port: 8080
   addresses:
-    - dns_name: 10.88.2.2
+    - dns_name: 10.89.0.2

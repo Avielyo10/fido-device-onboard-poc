@@ -35,7 +35,7 @@ info "Copy testdevice1.ov to owner-onboarding-service"
 podman cp testdevice1.ov owner-onboarding-service:/home/fido-user/ownership_vouchers/${ov}
 
 info "Running client"
-podman run -dt --network myCNI --ip 10.88.2.5 --name fido-client quay.io/ayosef/fdo-client-linuxapp /bin/bash
+podman run -dt --network myCNI --ip 10.89.0.5 --name fido-client quay.io/ayosef/fdo-client-linuxapp /bin/bash
 podman exec -ti fido-client fdo-client-linuxapp | tee fido-client.log
 
 ssh_key=$(podman exec -ti fido-client cat /root/.ssh/authorized_keys | grep ayosef)

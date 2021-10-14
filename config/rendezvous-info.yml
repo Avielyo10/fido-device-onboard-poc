@@ -1,5 +1,5 @@
 ---
-- dns: 10.88.2.3
+- dns: 10.89.0.3
   device_port: 8081
   owner_port: 8081
   protocol: http
