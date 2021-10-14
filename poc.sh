@@ -49,4 +49,3 @@ info "Save logs"
 podman logs owner-onboarding-service > owner-onboarding-service.log
 podman logs rendezvous-server > rendezvous-server.log
 
-make clean
