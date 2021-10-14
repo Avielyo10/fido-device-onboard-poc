@@ -26,13 +26,10 @@ info "Report to rendezvous"
 podman exec -ti owner fdo-owner-tool report-to-rendezvous --ownership-voucher testdevice1.ov --owner-private-key keys/owner_key.der --owner-addresses-path owner-addresses.yml --wait-time 600
 ov=$(podman exec -ti owner fdo-owner-tool dump-ownership-voucher testdevice1.ov | grep -i guid | awk '{print $NF}' | tr -dc '[:print:]')
 
-info "Copying testdevice1.ov"
-podman cp owner:/testdevice1.ov .
-
 check_registered_devices
 
 info "Copy testdevice1.ov to owner-onboarding-service"
-podman cp testdevice1.ov owner-onboarding-service:/home/fido-user/ownership_vouchers/${ov}
+podman cp owner:/testdevice1.ov owner-onboarding-service:/home/fido-user/ownership_vouchers/${ov}
 
 info "Running client"
 podman run -dt --network myCNI --ip 10.89.0.5 --name fido-client quay.io/ayosef/fdo-client-linuxapp /bin/bash
